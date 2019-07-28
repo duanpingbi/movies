@@ -48,13 +48,13 @@
 }
 .search_body .sarch_input .search_input_wapper i{
     font-size: 16px;
-    padding: 4px 0;
+    padding: 10px 0;
 }
 .search_body .sarch_input .search_input_wapper input{
-    font-size: 13px;
+    font-size: 14px;
     outline: none;
     color: #333333;
-    padding: 4px 0;
+    padding: 10px 0;
     margin-left: 10px;
     border: 1px solid #e6e6e6;
     width: 100%;

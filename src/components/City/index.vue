@@ -51,7 +51,12 @@
 
 <script>
     export default {
-        name: "City"
+        name: "City",
+        mounted() {
+            this.axios.get('journalismApi').then((res)=>{
+                console.log(res);
+            })
+        }
     }
 </script>
 
