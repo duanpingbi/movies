@@ -2,13 +2,13 @@
     <div id="main">
         <Header title="电影"/>
             <div id="content">
-                <div class="movie_menu">
+                <div class="movie_menu clearfix">
                     <router-link class="movie_city" to="/movie/city" tag="div">
-                        <span>大连</span><i class="iconfont icon-xiala"></i>
+                        <span>{{$store.state.City.nm}}</span><i class="iconfont icon-xiala"></i>
                     </router-link>
                     <div class="hot_switch" >
-                        <router-link class="hot_item" to="/movie/nowPlaying" tag="div">正在热映</router-link>
-                        <router-link class="hot_item" to="/movie/comingSoon" tag="div">即将上映</router-link>
+                        <router-link class="hot_item" to="/movie/nowPlaying" tag="div">热门推荐</router-link>
+                        <router-link class="hot_item" to="/movie/comingSoon" tag="div">分类推荐</router-link>
                     </div>
                     <router-link class="search" to="/movie/search" tag="div">
                         <i class="iconfont icon-sousuo"></i>
@@ -25,11 +25,37 @@
 <script>
     import Header from '@/components/Header';
     import ToolBar from '@/components/ToolBar';
+    import { messageBox} from '@/components/JS';
     export default {
         name: "Movie",
         components:{
             Header,
             ToolBar
+        },
+        mounted() {
+            var that = this;
+            this.axios.get('/json').then((res)=>{
+                console.log(res);
+                var code = res.status;
+                if(code === 200){
+                    var nm = res.data.city;
+                    var id = res.data.lat;
+                    console.log(that.$store.state.City.id);
+                    if(that.$store.state.City.id == id){
+                        return;
+                    }
+                    messageBox({
+                        title:'定位',
+                        content:nm,
+                        ok:'切换定位',
+                        cancel:'取消',
+                        handelOk:function () {
+                            that.$store.commit('City/CITY_INFO',{id,nm});
+                        }
+                    })
+                }
+            })
+
         }
     }
 </script>
@@ -52,21 +78,20 @@
      height: 46px;
      line-height: 46px;
      border-bottom: 1px solid #cccccc;
+     z-index: 999;
+     background: #ffffff;
  }
  #content .movie_menu .movie_city{
      margin-left: 20px;
-     height: 100%;
+     height: 46px;
+     line-height: 46px;
      font-size: 18px;
      color: #888888;
      font-weight: bold;
-     line-height: 46px;
- }
- #content .movie_menu .movie_city .router-link-active{
-     color: #bd4c38;
  }
  #content .movie_menu .hot_switch{
      display: flex;
-     height: 100%;
+     height: 46px;
      line-height: 46px;
  }
  #content .movie_menu .hot_switch .hot_item{
@@ -76,10 +101,6 @@
      font-size: 18px;
      font-weight: bold;
  }
- #content .movie_menu .hot_switch .hot_item .router-link-active{
-     color: #bd4c38;
-     border-bottom: 2px solid #bd4c38;
- }
  #content .movie_menu .search{
      margin-right: 20px;
  }
@@ -88,7 +109,8 @@
      font-size: 24px;
      color: #888888;
  }
- #content .movie_menu .search i .router-link-active{
-     color: #bd4c38;
+ .router-link-active{
+     color: #bd4c38 !important;
+     border-bottom: 2px solid #bd4c38;
  }
 </style>

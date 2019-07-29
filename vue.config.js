@@ -1,8 +1,16 @@
 module.exports = {
     devServer: {
         proxy: {
-            '/journalismApi':{
-                target:'https://www.apiopen.top',
+            '/todayVideo':{
+                target:'https://api.apiopen.top',
+                changeOrigin: true
+            },
+            '/videoCategory':{
+                target:'https://api.apiopen.top',
+                changeOrigin: true
+            },
+            '/json':{
+                target:'http://ip-api.com',
                 changeOrigin: true
             }
         }

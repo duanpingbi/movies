@@ -1,61 +1,61 @@
 <template>
-    <div class="now">
-        <ul>
-            <li>
-                <div class="pic"></div>
-                <div class="info_list">
-                    <h2>无名之辈</h2>
-                    <p>观众评分：<span class="red">9.2</span></p>
-                    <p>主演：陈建斌 </p>
-                    <p>今天还有77场</p>
-                </div>
-                <div class="btn">
-                    <span class="btn_small">预售</span>
-                </div>
-            </li>
-            <li>
-                <div class="pic"></div>
-                <div class="info_list">
-                    <h2>无名之辈</h2>
-                    <p>观众评分：<span class="red">9.2</span></p>
-                    <p>主演：陈建斌 </p>
-                    <p>今天还有77场</p>
-                </div>
-                <div class="btn">
-                    <span class="btn_small">预售</span>
-                </div>
-            </li>
-            <li>
-                <div class="pic"></div>
-                <div class="info_list">
-                    <h2>无名之辈</h2>
-                    <p>观众评分：<span class="red">9.2</span></p>
-                    <p>主演：陈建斌 </p>
-                    <p>今天还有77场</p>
-                </div>
-                <div class="btn">
-                    <span class="btn_small">预售</span>
-                </div>
-            </li>
-            <li>
-                <div class="pic"></div>
-                <div class="info_list">
-                    <h2>无名之辈</h2>
-                    <p>观众评分：<span class="red">9.2</span></p>
-                    <p>主演：陈建斌 </p>
-                    <p>今天还有77场</p>
-                </div>
-                <div class="btn">
-                    <span class="btn_small">预售</span>
-                </div>
-            </li>
-        </ul>
+    <div class="now clearfix">
+        <Loader v-if="isLoading"/>
+        <Scroll>
+            <ul>
+                <li v-for="item in movieLists" :key="item.id">
+                    <div class="pic"><img :src="item.icon" alt=""></div>
+                    <div class="info_list">
+                        <h2>{{item.title}}</h2>
+                        <p>{{item.description}}</p>
+                    </div>
+                    <div class="btn">
+                        <a :href="item.actionUrl" class="btn_small">详情</a>
+                    </div>
+                </li>
+            </ul>
+        </Scroll>
     </div>
 </template>
 
 <script>
     export default {
-        name: "ComingSoon"
+        name: "ComingSoon",
+        data(){
+            return {
+                movieLists:[],
+                isLoading:true
+            }
+        },
+        mounted() {
+            this.axios.get('/videoCategory').then((res)=>{
+                // console.log(res);
+                var msg = res.data.code;
+                var datas = res.data.result.itemList;
+                var len =res.data.result.count;
+                var movies = [];
+                if(msg === 200){
+                    this.isLoading = false;
+                    for(var i =0;i<len;i++){
+                        var actionUrl = datas[i].data.actionUrl,//
+                            description = datas[i].data.description,
+                            icon = datas[i].data.icon,
+                            id = datas[i].data.id,
+                            title = datas[i].data.title.slice(1);
+                        var obj ={
+                            actionUrl,
+                            description,
+                            icon,
+                            id,
+                            title
+                        };
+                        movies.push(obj);
+                    }
+                    //console.log(movies);
+                    this.movieLists = movies;
+                }
+            })
+        }
     }
 </script>
 
@@ -67,7 +67,6 @@
         overflow: auto;
     }
     .now ul{
-        margin: 20px 0;
         width: 100%;
     }
     .now ul li{
@@ -79,8 +78,7 @@
     }
     .now .pic{
         width: 70px;
-        height: 110px;
-        background: darkkhaki;
+        height: 100px;
         flex: 1;
     }
     .now .pic img{
@@ -106,6 +104,9 @@
     .now .btn{
         flex: 1;
         align-self: center;
+    }
+    .now .btn a{
+        text-decoration: none;
     }
     .now .btn .btn_small{
         background: #bd4c38;
